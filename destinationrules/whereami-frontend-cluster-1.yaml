@@ -10,7 +10,7 @@ spec:
       http:
         maxRequestsPerConnection: 1
     loadBalancer:
-      simple: ROUND_ROBIN
+      simple: LEAST_REQUEST
       localityLbSetting:
         enabled: true
         failover:
