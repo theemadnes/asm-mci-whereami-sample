@@ -1,0 +1,9 @@
+nameSuffix: "-frontend"
+namespace: frontend
+commonLabels:
+  app: whereami-frontend
+bases:
+- ../base
+patches:
+- cm-flag.yaml
+- service-type.yaml
