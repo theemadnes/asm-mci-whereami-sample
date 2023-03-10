@@ -8,7 +8,7 @@ spec:
   trafficPolicy:
     connectionPool:
       http:
-        maxRequestsPerConnection: 1
+        maxRequestsPerConnection: 0
     loadBalancer:
       simple: LEAST_REQUEST
       localityLbSetting:
