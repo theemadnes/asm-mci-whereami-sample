@@ -288,3 +288,9 @@ and for backend
 kubectl --context=${CLUSTER_1} apply -f destinationrules/whereami-backend-cluster-1.yaml
 kubectl --context=${CLUSTER_2} apply -f destinationrules/whereami-backend-cluster-2.yaml
 ```
+
+### test with hey
+
+```
+hey -c 50 -n 10000 https://$MCI_ENDPOINT
+```
