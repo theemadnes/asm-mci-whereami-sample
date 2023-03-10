@@ -276,3 +276,15 @@ gcloud container fleet mesh update \
 # verify
 gcloud container fleet mesh describe --project mc-e2m-01
 ```
+
+set up locality failover for frontend
+```
+kubectl --context=${CLUSTER_1} apply -f destinationrules/whereami-frontend-cluster-1.yaml
+kubectl --context=${CLUSTER_2} apply -f destinationrules/whereami-frontend-cluster-2.yaml
+```
+
+and for backend
+```
+kubectl --context=${CLUSTER_1} apply -f destinationrules/whereami-backend-cluster-1.yaml
+kubectl --context=${CLUSTER_2} apply -f destinationrules/whereami-backend-cluster-2.yaml
+```
