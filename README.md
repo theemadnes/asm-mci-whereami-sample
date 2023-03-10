@@ -294,3 +294,41 @@ kubectl --context=${CLUSTER_2} apply -f destinationrules/whereami-backend-cluste
 ```
 hey -c 50 -n 10000 https://$MCI_ENDPOINT
 ```
+
+### enable cloud trace
+
+```
+cat <<EOF | kubectl --context=${CLUSTER_1} apply -f -
+apiVersion: v1
+data:
+   mesh: |-
+      defaultConfig:
+        tracing:
+          stackdriver: {}
+kind: ConfigMap
+metadata:
+   name: istio-asm-managed-rapid
+   namespace: istio-system
+EOF
+
+cat <<EOF | kubectl --context=${CLUSTER_2} apply -f -
+apiVersion: v1
+data:
+   mesh: |-
+      defaultConfig:
+        tracing:
+          stackdriver: {}
+kind: ConfigMap
+metadata:
+   name: istio-asm-managed-rapid
+   namespace: istio-system
+EOF
+
+# restart proxies
+kubectl --context=${CLUSTER_1} rollout restart deployment -n frontend whereami-frontend
+kubectl --context=${CLUSTER_2} rollout restart deployment -n frontend whereami-frontend
+kubectl --context=${CLUSTER_1} rollout restart deployment -n backend whereami-backend
+kubectl --context=${CLUSTER_2} rollout restart deployment -n backend whereami-backend
+kubectl --context=${CLUSTER_1} rollout restart deployment -n asm-ingress asm-ingressgateway
+kubectl --context=${CLUSTER_2} rollout restart deployment -n asm-ingress asm-ingressgateway
+```
