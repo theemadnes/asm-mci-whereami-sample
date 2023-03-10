@@ -3,11 +3,11 @@ sample yaml for using whereami across multiple clusters
 
 ### setup
 
-already have two clusters
+have two clusters
 - autopilot-cluster-1
-- autopilot-cluster-2
+- autopilot-cluster-3
 
-> needed to create autopilot-cluster-3 since 1 and 2 where in the same region 
+> note that `cluster-3` is referred to by environment variable `CLUSTER_2` - sorry
 
 going to need to set up MCS and ingress-gateway service 
 ```
