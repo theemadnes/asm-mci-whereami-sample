@@ -13,9 +13,13 @@ spec:
       simple: LEAST_REQUEST
       localityLbSetting:
         enabled: true
-        failover:
-          - from: us-central1
-            to: us-east4
+        distribute:
+          - from: us-central1/*
+            to:
+              "us-central1/*": 100
+        #failover:
+        #  - from: us-central1
+        #    to: us-east4
     outlierDetection:
       consecutive5xxErrors: 1
       interval: 1s
