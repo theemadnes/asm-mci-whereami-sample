@@ -260,3 +260,19 @@ EOF
 kubectl --context=$CLUSTER_1 apply -f whereami-mci/
 
 ```
+
+try to switch to automatic management
+```
+gcloud container fleet mesh update \
+    --management automatic \
+    --memberships autopilot-cluster-1-1 \
+    --project mc-e2m-01
+
+gcloud container fleet mesh update \
+    --management automatic \
+    --memberships autopilot-cluster-3-1 \
+    --project mc-e2m-01
+
+# verify
+gcloud container fleet mesh describe --project mc-e2m-01
+```
