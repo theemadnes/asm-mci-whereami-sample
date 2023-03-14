@@ -305,7 +305,12 @@ do
 done
 ```
 
-just get the zone 
+or 
+```
+while true; do    curl -s https://$MCI_ENDPOINT; done
+```
+
+just get the frontend zone 
 ```
 while true
 do
@@ -316,6 +321,19 @@ done
 or 
 ```
 while true; do    curl -s https://$MCI_ENDPOINT | jq '.zone'; done
+```
+
+just get the backend zone 
+```
+while true
+do
+   curl -s https://$MCI_ENDPOINT | jq '.backend_result.zone'
+done
+```
+
+or 
+```
+while true; do    curl -s https://$MCI_ENDPOINT | jq '.backend_result.zone'; done
 ```
 
 ### scaling resources to `0` and back again `0`
@@ -334,6 +352,12 @@ kubectl --context=${CLUSTER_1} -n frontend patch deployment whereami-frontend --
 
 # back to 3
 kubectl --context=${CLUSTER_1} -n frontend patch deployment whereami-frontend --subresource='scale' --type='merge' -p '{"spec":{"replicas":3}}'
+
+# patch cluster_1 backend deployment replicas to 0
+kubectl --context=${CLUSTER_1} -n backend patch deployment whereami-backend --subresource='scale' --type='merge' -p '{"spec":{"replicas":0}}'
+
+# back to 3
+kubectl --context=${CLUSTER_1} -n backend patch deployment whereami-backend --subresource='scale' --type='merge' -p '{"spec":{"replicas":3}}'
 ```
 
 ### enable cloud trace
