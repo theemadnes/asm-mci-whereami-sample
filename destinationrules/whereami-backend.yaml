@@ -14,10 +14,15 @@ spec:
       localityLbSetting:
         enabled: true
         distribute:
+          - from: us-central1/*
+            to:
+              "us-central1/*": 100
           - from: us-east4/*
             to:
               "us-east4/*": 100
         #failover:
+        #  - from: us-central1
+        #    to: us-east4
         #  - from: us-east4
         #    to: us-central1
     outlierDetection:

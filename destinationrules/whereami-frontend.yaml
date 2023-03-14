@@ -1,10 +1,10 @@
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
-  name: backend
-  namespace: backend
+  name: frontend
+  namespace: frontend
 spec:
-  host: whereami-backend.backend.svc.cluster.local
+  host: whereami-frontend.frontend.svc.cluster.local
   trafficPolicy:
     connectionPool:
       http:
@@ -17,10 +17,16 @@ spec:
           - from: us-central1/*
             to:
               "us-central1/*": 100
+          - from: us-east4/*
+            to:
+              "us-east4/*": 100
         #failover:
         #  - from: us-central1
         #    to: us-east4
+        #  - from: us-east4
+        #    to: us-central1
     outlierDetection:
       consecutive5xxErrors: 1
       interval: 1s
       baseEjectionTime: 1m
+
