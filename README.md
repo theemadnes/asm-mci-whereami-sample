@@ -296,6 +296,46 @@ kubectl --context=${CLUSTER_2} apply -f destinationrules/whereami-backend.yaml
 hey -c 50 -n 10000 https://$MCI_ENDPOINT
 ```
 
+### test with curl forever
+
+```
+while true
+do
+   curl https://$MCI_ENDPOINT
+done
+```
+
+just get the zone 
+```
+while true
+do
+   curl -s https://$MCI_ENDPOINT | jq '.zone'
+done
+```
+
+or 
+```
+while true; do    curl -s https://$MCI_ENDPOINT | jq '.zone'; done
+```
+
+### scaling resources to `0` and back again `0`
+
+
+```
+# cluster_1 ingress gateway replicas to 0
+kubectl --context=${CLUSTER_1} -n asm-ingress patch deployment asm-ingressgateway --subresource='scale' --type='merge' -p '{"spec":{"replicas":0}}'
+
+# back to 3
+kubectl --context=${CLUSTER_1} -n asm-ingress patch deployment asm-ingressgateway --subresource='scale' --type='merge' -p '{"spec":{"replicas":3}}'
+
+
+# patch cluster_1 frontend deployment replicas to 0
+kubectl --context=${CLUSTER_1} -n frontend patch deployment whereami-frontend --subresource='scale' --type='merge' -p '{"spec":{"replicas":0}}'
+
+# back to 3
+kubectl --context=${CLUSTER_1} -n frontend patch deployment whereami-frontend --subresource='scale' --type='merge' -p '{"spec":{"replicas":3}}'
+```
+
 ### enable cloud trace
 
 ```
