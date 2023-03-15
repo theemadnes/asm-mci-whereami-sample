@@ -5,9 +5,8 @@ sample yaml for using whereami across multiple clusters
 
 have two clusters
 - autopilot-cluster-1
-- autopilot-cluster-3
+- autopilot-cluster-2
 
-> note that `cluster-3` is referred to by environment variable `CLUSTER_2` - sorry
 
 going to need to set up MCS and ingress-gateway service 
 ```
@@ -54,11 +53,11 @@ export IG_NAMESPACE=asm-ingress
 export REGION_1=us-central1
 export REGION_2=us-east4
 export CLUSTER_1=autopilot-cluster-1 # designated as config cluster
-export CLUSTER_2=autopilot-cluster-3
+export CLUSTER_2=autopilot-cluster-2
 export MCI_ENDPOINT=frontend.endpoints.${PROJECT}.cloud.goog
 
 # connect to new cluster
-gcloud container clusters get-credentials autopilot-cluster-3 --region us-east4 --project mc-e2m-01
+gcloud container clusters get-credentials autopilot-cluster-2 --region us-east4 --project mc-e2m-01
 
 # rename second cluster context
 kubectl config rename-context gke_${PROJECT}_${REGION_2}_${CLUSTER_2} ${CLUSTER_2}
