@@ -57,10 +57,33 @@ export CLUSTER_2=autopilot-cluster-2
 export MCI_ENDPOINT=frontend.endpoints.${PROJECT}.cloud.goog
 
 # connect to new cluster
+gcloud container clusters get-credentials autopilot-cluster-1 --region us-central1 --project mc-e2m-01
 gcloud container clusters get-credentials autopilot-cluster-2 --region us-east4 --project mc-e2m-01
 
 # rename second cluster context
+kubectl config rename-context gke_${PROJECT}_${REGION_1}_${CLUSTER_1} ${CLUSTER_1}
 kubectl config rename-context gke_${PROJECT}_${REGION_2}_${CLUSTER_2} ${CLUSTER_2}
+
+# create static IP (for MCI) and DNS entry
+
+gcloud compute addresses create mc-ingress-ip --global
+
+export GCLB_IP=$(gcloud compute addresses describe mc-ingress-ip --global --format=json | jq -r '.address')
+echo ${GCLB_IP}
+
+cat <<EOF > dns-spec.yaml
+swagger: "2.0"
+info:
+  description: "Cloud Endpoints DNS"
+  title: "Cloud Endpoints DNS"
+  version: "1.0.0"
+paths: {}
+host: "frontend.endpoints.${PROJECT}.cloud.goog"
+x-google-endpoints:
+- name: "frontend.endpoints.${PROJECT}.cloud.goog"
+  target: "${GCLB_IP}"
+EOF
+gcloud endpoints services deploy dns-spec.yaml
 
 ```
 
@@ -69,8 +92,12 @@ get fleet status
 gcloud container fleet mesh describe --project $PROJECT
 ```
 
-set up ingress gateway on cluster_2
+set up ingress gateway on clusters
 ```
+kubectl --context=${CLUSTER_1} create namespace ${IG_NAMESPACE}
+
+kubectl --context=${CLUSTER_1} label namespace asm-ingress istio-injection=enabled
+
 kubectl --context=${CLUSTER_2} create namespace ${IG_NAMESPACE}
 
 kubectl --context=${CLUSTER_2} label namespace asm-ingress istio-injection=enabled
@@ -80,6 +107,9 @@ openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
 -subj "/CN=frontend.endpoints.${PROJECT}.cloud.goog/O=Edge2Mesh Inc" \
 -keyout frontend.endpoints.${PROJECT}.cloud.goog.key \
 -out frontend.endpoints.${PROJECT}.cloud.goog.crt
+
+kubectl --context=${CLUSTER_1} -n ${IG_NAMESPACE} create secret tls edge2mesh-credential --key=frontend.endpoints.${PROJECT}.cloud.goog.key --cert=frontend.endpoints.${PROJECT}.cloud.goog.crt
+
 
 kubectl --context=${CLUSTER_2} -n ${IG_NAMESPACE} create secret tls edge2mesh-credential --key=frontend.endpoints.${PROJECT}.cloud.goog.key --cert=frontend.endpoints.${PROJECT}.cloud.goog.crt
 
@@ -201,6 +231,13 @@ kubectl --context=${CLUSTER_1} apply -f whereami-mesh/
 kubectl --context=${CLUSTER_2} apply -f whereami-mesh/
 ```
 
+Create SSL Cert
+```
+gcloud compute ssl-certificates create gke-mc-ingress-cert \
+    --domains=frontend.endpoints.${PROJECT}.cloud.goog \
+    --global
+```
+
 fix MCS and MCI
 ```
 mkdir whereami-mci
@@ -212,7 +249,7 @@ metadata:
   name: asm-ingressgateway-multicluster-ingress
   namespace: ${IG_NAMESPACE}
   annotations:
-    networking.gke.io/static-ip: "mcg-ingress-ip"
+    networking.gke.io/static-ip: "${GCLB_IP}"
     #kubernetes.io/ingress.allow-http: "false" # not recognized
     networking.gke.io/pre-shared-certs: "gke-mc-ingress-cert"
 spec:
