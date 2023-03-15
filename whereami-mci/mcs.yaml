@@ -18,4 +18,4 @@ spec:
         targetPort: 8443
   clusters:
   - link: "us-central1/autopilot-cluster-1"
-  - link: "us-east4/autopilot-cluster-3"
+  - link: "us-east4/autopilot-cluster-2"
