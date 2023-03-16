@@ -243,6 +243,11 @@ gcloud compute ssl-certificates create gke-mc-ingress-cert \
     --domains=frontend.endpoints.${PROJECT}.cloud.goog \
     --global
 ```
+**NOTE:** u can use ManagedCertificate CR, but use the ```networking.gke.io/pre-shared-certs``` annotation and get the name via:
+```
+kubectl get managedcertificate managed-cert -n whereami -o json | jq '.status.certificateName'
+```
+
 
 fix MCS and MCI
 ```
