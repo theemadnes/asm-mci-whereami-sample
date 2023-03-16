@@ -7,7 +7,9 @@ have two clusters
 - autopilot-cluster-1
 - autopilot-cluster-2
 
+and enable ASM at cluster creation.
 
+<==REMOVE?
 going to need to set up MCS and ingress-gateway service 
 ```
 $ kubectl get mcs -A -o yaml
@@ -46,7 +48,7 @@ kind: List
 metadata:
   resourceVersion: ""
 ```
-
+<==END REMOVE??
 ```
 export PROJECT=mc-e2m-01
 export IG_NAMESPACE=asm-ingress
@@ -90,6 +92,10 @@ gcloud endpoints services deploy dns-spec.yaml
 get fleet status
 ```
 gcloud container fleet mesh describe --project $PROJECT
+```
+if Multi Cluster Ingress not enabled
+```
+gcloud container fleet ingress enable --project $PROJECT --config-membership ${CLUSTER_1}
 ```
 
 set up ingress gateway on clusters
