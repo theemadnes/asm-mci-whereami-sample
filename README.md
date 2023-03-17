@@ -7,48 +7,8 @@ have two clusters
 - autopilot-cluster-1
 - autopilot-cluster-2
 
-and enable ASM at cluster creation.
+and enable ASM at cluster creation (use the checkbox if doing click-ops
 
-<==REMOVE?
-going to need to set up MCS and ingress-gateway service 
-```
-$ kubectl get mcs -A -o yaml
-apiVersion: v1
-items:
-- apiVersion: networking.gke.io/v1
-  kind: MultiClusterService
-  metadata:
-    annotations:
-      beta.cloud.google.com/backend-config: '{"ports": {"443":"gke-ingress-config"}}'
-      kubectl.kubernetes.io/last-applied-configuration: |
-        {"apiVersion":"networking.gke.io/v1","kind":"MultiClusterService","metadata":{"annotations":{"beta.cloud.google.com/backend-config":"{\"ports\": {\"443\":\"gke-ingress-config\"}}","networking.gke.io/app-protocols":"{\"https\":\"HTTP2\"}"},"name":"asm-ingressgateway-multicluster-svc-1","namespace":"asm-ingress"},"spec":{"clusters":[{"link":"us-central1/autopilot-cluster-1"},{"link":"us-central1/autopilot-cluster-2"}],"template":{"spec":{"ports":[{"name":"https","port":443,"protocol":"TCP"}],"selector":{"app":"istio-ingressgateway","istio":"ingressgateway"}}}}}
-      networking.gke.io/app-protocols: '{"https":"HTTP2"}'
-    creationTimestamp: "2023-01-27T05:04:45Z"
-    finalizers:
-    - mcs.finalizer.networking.gke.io
-    generation: 7
-    name: asm-ingressgateway-multicluster-svc-1
-    namespace: asm-ingress
-    resourceVersion: "2287991"
-    uid: d663e7ca-8786-49bf-9de9-9b41760c2c19
-  spec:
-    clusters:
-    - link: us-central1/autopilot-cluster-1
-    - link: us-central1/autopilot-cluster-2
-    template:
-      spec:
-        ports:
-        - name: https
-          port: 443
-          protocol: TCP
-        selector:
-          app: istio-ingressgateway
-          istio: ingressgateway
-kind: List
-metadata:
-  resourceVersion: ""
-```
-<==END REMOVE??
 ```
 export PROJECT=mc-e2m-01
 export IG_NAMESPACE=asm-ingress
