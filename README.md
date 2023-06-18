@@ -404,3 +404,6 @@ kubectl --context=${CLUSTER_2} rollout restart deployment -n backend whereami-ba
 kubectl --context=${CLUSTER_1} rollout restart deployment -n asm-ingress asm-ingressgateway
 kubectl --context=${CLUSTER_2} rollout restart deployment -n asm-ingress asm-ingressgateway
 ```
+
+### testing admin interface of envoy
+
