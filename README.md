@@ -7,7 +7,7 @@ have two clusters
 - autopilot-cluster-1
 - autopilot-cluster-2
 
-and enable ASM at cluster creation (use the checkbox if doing click-ops
+and enable ASM at cluster creation (use the checkbox if doing click-ops)
 
 ```
 export PROJECT=mc-e2m-01
